@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anime Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="anime.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ═══ HEADER ═══ -->
+      <header class="site-header">
+        <div class="header-inner">
+          <div class="header-brand">
+            <span class="brand-icon"
+              ><i class="fa-solid fa-torii-gate"></i
+            ></span>
+            <h1>ManhWatch</h1>
+          </div>
+          <button class="btn-add">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add New Media</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- ═══ LIBRARY TOOLBAR ═══ -->
+      <div class="library-toolbar">
+        <div class="library-toolbar-inner">
+          <div class="library-toolbar-left">
+            <i class="fa-solid fa-database lib-icon"></i>
+            <span class="lib-label">Library</span>
+            <span class="lib-count-badge" id="lib-count-badge">0 titles</span>
+          </div>
+          <div class="library-toolbar-right">
+            <label
+              class="lib-btn lib-btn--import"
+              for="import-json-input"
+              title="Import library from JSON"
+            >
+              <i class="fa-solid fa-upload"></i>
+              <span>Import JSON</span>
+              <input
+                id="import-json-input"
+                type="file"
+                accept=".json,application/json"
+                style="display: none"
+              />
+            </label>
+            <button
+              class="lib-btn lib-btn--export"
+              id="btn-export-json"
+              title="Export library as JSON"
+            >
+              <i class="fa-solid fa-download"></i>
+              <span>Export JSON</span>
+            </button>
+          </div>
+        </div>
+        <div class="lib-toast" id="lib-toast"></div>
+      </div>
+
+      <!-- ═══ FILTER BAR ═══ -->
+      <section class="filter-bar">
+        <div class="filter-row">
+          <!-- Search -->
+          <div class="filter-field filter-field--search">
+            <label class="filter-label">Search</label>
+            <div class="filter-control">
+              <i class="fa-solid fa-magnifying-glass control-icon"></i>
+              <input
+                id="search-input"
+                type="text"
+                class="control-input"
+                placeholder="Title, studio…"
+              />
+            </div>
+          </div>
+
+          <!-- Genres -->
+          <div class="filter-field filter-field--genres" id="genre-field">
+            <label class="filter-label">Genres</label>
+            <div
+              class="filter-control filter-control--genre"
+              id="genre-control"
+            >
+              <div class="genre-selected" id="genre-selected">
+                <span class="genre-placeholder">Any</span>
+              </div>
+              <i
+                class="fa-solid fa-chevron-down genre-chevron"
+                id="genre-chevron"
+              ></i>
+            </div>
+            <div class="genre-dropdown" id="genre-dropdown">
+              <div class="genre-grid" id="genre-grid">
+                <!-- populated by anime.js from Genres.json -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Year -->
+          <div class="filter-field">
+            <label class="filter-label">Year</label>
+            <div class="filter-control filter-control--select">
+              <select id="year-select" class="control-select">
+                <option value="">Any</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-chevron"></i>
+            </div>
+          </div>
+
+          <!-- Season -->
+          <div class="filter-field">
+            <label class="filter-label">Season</label>
+            <div class="filter-control filter-control--select">
+              <select id="season-select" class="control-select">
+                <option value="">Any</option>
+                <option value="Winter">Winter</option>
+                <option value="Spring">Spring</option>
+                <option value="Summer">Summer</option>
+                <option value="Fall">Fall</option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-chevron"></i>
+            </div>
+          </div>
+
+          <!-- Format -->
+          <div class="filter-field">
+            <label class="filter-label">Format</label>
+            <div class="filter-control filter-control--select">
+              <select id="format-select" class="control-select">
+                <option value="">Any</option>
+                <option value="TV Show">TV Show</option>
+                <option value="Movie">Movie</option>
+                <option value="Web Novel">Web Novel</option>
+                <option value="Manhwa">Manhwa</option>
+                <option value="Manga">Manga</option>
+                <option value="Comics">Comics</option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-chevron"></i>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="filter-field">
+            <label class="filter-label">Status</label>
+            <div class="filter-control filter-control--select">
+              <select id="status-select" class="control-select">
+                <option value="">Any</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Completed">Completed</option>
+                <option value="Hiatus">Hiatus</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="New Season">New Season</option>
+                <option value="Released">Released</option>
+                <option value="Unreleased">Upcoming</option>
+                <option value="In Production">In Production</option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-chevron"></i>
+            </div>
+          </div>
+
+          <!-- More filters -->
+          <div class="filter-field filter-field--icon">
+            <label class="filter-label">&nbsp;</label>
+            <button class="btn-more-filters" title="More filters">
+              <i class="fa-solid fa-sliders"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Active tags + view controls -->
+        <div class="filter-meta">
+          <div class="active-tags" id="active-tags">
+            <i class="fa-solid fa-tag tag-icon"></i>
+            <!-- pills injected here -->
+          </div>
+          <div class="results-count" id="results-count"></div>
+          <div class="view-controls">
+            <button class="sort-btn" id="sort-btn">
+              <i class="fa-solid fa-arrow-down-wide-short" id="sort-icon"></i>
+              <span>Popularity</span>
+            </button>
+            <div class="vdivider"></div>
+            <div class="view-modes">
+              <button class="vm-btn active" data-view="grid" title="Grid">
+                <i class="fa-solid fa-grip"></i>
+              </button>
+              <button class="vm-btn" data-view="detailed" title="Detailed">
+                <i class="fa-solid fa-table-cells-large"></i>
+              </button>
+              <button class="vm-btn" data-view="compact" title="List">
+                <i class="fa-solid fa-list"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ CARD GRID ═══ -->
+      <main class="card-grid grid-view" id="card-grid"></main>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display: none">
+        <i class="fa-solid fa-circle-xmark"></i>
+        <p>No anime match your filters.</p>
+        <button class="btn-clear-filters" id="btn-clear-filters">
+          Clear filters
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ ADD / EDIT MODAL ═══ -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal" id="modal" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-title">Add Anime</h2>
+          <button class="modal-close" id="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="edit-index" value="" />
+
+          <div class="form-row form-row--full">
+            <label class="form-label">Title <span class="req">*</span></label>
+            <input
+              id="f-title"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Fullmetal Alchemist: Brotherhood"
+            />
+          </div>
+
+          <div class="form-row form-row--full">
+            <label class="form-label">Studio</label>
+            <input
+              id="f-studio"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Bones"
+            />
+          </div>
+
+          <div class="form-row form-row--half">
+            <div>
+              <label class="form-label">Format</label>
+              <div class="form-select-wrap">
+                <select id="f-format" class="form-select">
+                  <option value="TV Show">TV Show</option>
+                  <option value="Movie">Movie</option>
+                  <option value="Web Novel">Web Novel</option>
+                  <option value="Manhwa">Manhwa</option>
+                  <option value="Manga">Manga</option>
+                  <option value="Comics">Comics</option>
+                </select>
+                <i class="fa-solid fa-chevron-down form-select-icon"></i>
+              </div>
+            </div>
+            <div id="ep-ch-field">
+              <label class="form-label" id="ep-ch-label">Episodes</label>
+              <input
+                id="f-episodes"
+                type="text"
+                class="form-input"
+                placeholder="e.g. 64 ep"
+              />
+            </div>
+          </div>
+
+          <div class="form-row form-row--half">
+            <div>
+              <label class="form-label">Season</label>
+              <div class="form-select-wrap">
+                <select id="f-season" class="form-select">
+                  <option value="">—</option>
+                  <option value="Winter">Winter</option>
+                  <option value="Spring">Spring</option>
+                  <option value="Summer">Summer</option>
+                  <option value="Fall">Fall</option>
+                </select>
+                <i class="fa-solid fa-chevron-down form-select-icon"></i>
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Year</label>
+              <input
+                id="f-year"
+                type="number"
+                class="form-input"
+                placeholder="e.g. 2024"
+                min="1960"
+                max="2030"
+              />
+            </div>
+          </div>
+
+          <div class="form-row form-row--half">
+            <div>
+              <label class="form-label" id="status-label">Status</label>
+              <div class="form-select-wrap">
+                <select id="f-status" class="form-select">
+                  <option value="Ongoing">Ongoing</option>
+                  <option value="Hiatus">Hiatus</option>
+                  <option value="Completed">Completed</option>
+                </select>
+                <i class="fa-solid fa-chevron-down form-select-icon"></i>
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Rating (%)</label>
+              <input
+                id="f-rating"
+                type="number"
+                class="form-input"
+                placeholder="e.g. 92"
+                min="0"
+                max="100"
+              />
+            </div>
+          </div>
+
+          <div class="form-row form-row--full">
+            <label class="form-label">Genres</label>
+            <div class="form-genre-grid" id="form-genre-grid">
+              <!-- populated by anime.js from Genres.json -->
+            </div>
+          </div>
+
+          <!-- Cover Image Section -->
+          <div class="form-row form-row--full">
+            <label class="form-label">Cover Image</label>
+            <div class="cover-section">
+              <div class="cover-preview" id="cover-preview">
+                <i class="fa-solid fa-image cover-preview-icon"></i>
+                <span class="cover-preview-hint">No image</span>
+              </div>
+              <div class="cover-inputs">
+                <label class="cover-upload-btn" for="f-cover-file">
+                  <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                  Upload image
+                  <input
+                    id="f-cover-file"
+                    type="file"
+                    accept="image/*"
+                    style="display: none"
+                  />
+                </label>
+                <button
+                  type="button"
+                  class="cover-clear-btn"
+                  id="cover-clear-btn"
+                  title="Remove image"
+                  style="display: none"
+                >
+                  <i class="fa-solid fa-xmark"></i> Remove image
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Chapter Link -->
+          <div class="form-row form-row--full">
+            <label class="form-label">Current Chapter / Episode Link</label>
+            <div class="form-input-icon-wrap">
+              <i class="fa-solid fa-link form-input-icon"></i>
+              <input
+                id="f-chapter-link"
+                type="url"
+                class="form-input form-input--padded"
+                placeholder="https://… link to where you left off"
+              />
+            </div>
+          </div>
+
+          <div class="form-row form-row--full">
+            <label class="form-label">Description</label>
+            <textarea
+              id="f-desc"
+              class="form-textarea"
+              rows="3"
+              placeholder="Short synopsis…"
+            ></textarea>
+          </div>
+
+          <div id="form-error" class="form-error" style="display: none"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="btn-cancel">Cancel</button>
+          <button class="btn-save" id="btn-save">
+            <i class="fa-solid fa-check"></i> Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="anime.js"></script>
+  </body>
+</html>

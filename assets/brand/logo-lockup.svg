@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 44" width="220" height="44" font-family="Rajdhani, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="mw-grad-l" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7b5cfa"></stop>
+      <stop offset="100%" stop-color="#00c2ff"></stop>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="4" width="36" height="36" rx="10" fill="url(#mw-grad-l)"></rect>
+  <g fill="#ffffff" transform="translate(2 4)">
+    <rect x="6" y="10" width="24" height="3.2" rx="1"></rect>
+    <rect x="8" y="14.6" width="20" height="2.2" rx="0.8"></rect>
+    <rect x="9" y="14.6" width="2.6" height="13" rx="0.6"></rect>
+    <rect x="24.4" y="14.6" width="2.6" height="13" rx="0.6"></rect>
+    <rect x="11.6" y="19.2" width="12.8" height="1.6" rx="0.4"></rect>
+  </g>
+  <text x="50" y="30" font-size="24" font-weight="700" fill="#e8edf5" letter-spacing="1.2">ManHwatch</text>
+</svg>
