@@ -61,10 +61,77 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultsCount = document.getElementById("results-count");
 
   const searchInput = document.getElementById("search-input");
-  const yearSelect = document.getElementById("year-select");
-  const seasonSelect = document.getElementById("season-select");
-  const formatSelect = document.getElementById("format-select");
-  const statusSelect = document.getElementById("status-select");
+
+  // ── Custom filter dropdowns (Year / Season / Format / Status) ─────────────
+  // Each returns a proxy with a .value getter/setter so the rest of the code
+  // doesn't need to change.
+  function makeCustomSelect(fieldId) {
+    const field    = document.getElementById(fieldId + "-field");
+    const control  = document.getElementById(fieldId + "-control");
+    const dropdown = document.getElementById(fieldId + "-dropdown");
+    const valueEl  = document.getElementById(fieldId + "-value");
+    let currentValue = "";
+
+    // Toggle open/close
+    control.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.classList.contains("open");
+      // Close all other custom dropdowns first
+      document.querySelectorAll(".custom-dropdown.open").forEach(d => {
+        if (d !== dropdown) {
+          d.classList.remove("open");
+          d.closest(".filter-field")?.querySelector(".filter-control--custom")?.classList.remove("open");
+        }
+      });
+      dropdown.classList.toggle("open", !isOpen);
+      control.classList.toggle("open", !isOpen);
+    });
+
+    // Option clicks
+    dropdown.querySelectorAll(".custom-opt").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const val = btn.dataset.value;
+        currentValue = val;
+        valueEl.textContent = val || "Any";
+        control.classList.toggle("selected", !!val);
+        dropdown.querySelectorAll(".custom-opt").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        dropdown.classList.remove("open");
+        control.classList.remove("open");
+        renderActivePills();
+        filterCards();
+      });
+    });
+
+    // Return value proxy
+    return {
+      get value() { return currentValue; },
+      set value(v) {
+        currentValue = v || "";
+        valueEl.textContent = v || "Any";
+        control.classList.toggle("selected", !!v);
+        dropdown.querySelectorAll(".custom-opt").forEach(b => {
+          b.classList.toggle("active", b.dataset.value === (v || ""));
+        });
+      },
+      tagName: "CUSTOM",
+      addEventListener() {} // no-op; events handled above
+    };
+  }
+
+  const yearSelect   = makeCustomSelect("year");
+  const seasonSelect = makeCustomSelect("season");
+  const formatSelect = makeCustomSelect("format");
+  const statusSelect = makeCustomSelect("status");
+
+  // Close custom dropdowns when clicking outside
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".custom-dropdown.open").forEach(d => {
+      d.classList.remove("open");
+      d.closest(".filter-field")?.querySelector(".filter-control--custom")?.classList.remove("open");
+    });
+  });
 
   const genreControl = document.getElementById("genre-control");
   const genreDropdown = document.getElementById("genre-dropdown");
